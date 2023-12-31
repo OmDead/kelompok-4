@@ -42,30 +42,24 @@ class SistemTiket:
         nama = self.nama.get()
         umur_str = self.umur.get()
         kontak_str = self.kontak.get()
-
         try:
             umur = int(umur_str)
             kontak = int(kontak_str)
         except ValueError:
             messagebox.showerror("Error", "Umur dan No.Kontak harus berupa angka.")
             return
-            
         if not hasattr(self, 'pickpilh'):
             messagebox.showerror("Error", "Silakan pilih film terlebih dahulu.")
             return
-        
         tgl_beli = self.tgl_beli.get_date().strftime('%d/%m/%Y')
         film = self.pickpilh
         harga = self.harga(film)
         jam_tayang = self.jam_tayang(film)
-
         with open(self.file, 'a', newline='') as file:
             fieldnames = ['Nama', 'Umur', 'No_tlp', 'Tanggal_Beli', 'Film', 'Harga', 'Jam_Tayang']
             writer = csv.DictWriter(file, fieldnames=fieldnames)
-
             if file.tell() == 0:
                 writer.writeheader()
-
             writer.writerow({
                 'Nama': nama,
                 'Umur': umur,
@@ -124,14 +118,12 @@ class SistemTiket:
         self.tree.column('Film', stretch=tk.NO, width=150)
         self.tree.column('Harga', stretch=tk.NO, width=100)
         self.tree.column('Jam Tayang', stretch=tk.NO, width=100)
-        
         no = 0
         with open(self.file, 'r') as file:
             reader = csv.DictReader(file)
             for idx, row in enumerate(reader, start=1):
                 no += 1
                 self.tree.insert('', 'end', iid=idx, values=(no, row['Nama'], row['Umur'], row['No_tlp'], row['Tanggal_Beli'], row['Film'],row['Harga'], row['Jam_Tayang']))
-        
         self.tree.pack(expand=YES, fill=BOTH)
         tk.Button(self.jendela_info, text='Total Penjualan', command=self.total_penjualan, font=self.font).pack(padx=5, pady=5)
 
