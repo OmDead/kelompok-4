@@ -28,7 +28,6 @@ class SistemTiket:
         tk.Button(root, text="Simpan", font=self.font, command=self.save_data).grid(row=6, column=0, padx=10, pady=10, columnspan=2)
         tk.Button(root, text="Lihat Data Pembeli",font=self.font, command=self.lihat_data).grid(row=7, column=0, padx=10, pady=10, columnspan=2)
         
-
     def pilih_film(self):
         self.jendela_film = tk.Toplevel(self.root)
         self.jendela_film.title("Pilih Film")
@@ -94,7 +93,7 @@ class SistemTiket:
         elif jdl_film == 'Layangan Putus':
             return 50000
         elif jdl_film == "13 Bom Di Jakarta":
-            return 40000
+            return 45000
         else:
             return ''
 
@@ -102,12 +101,13 @@ class SistemTiket:
         self.nama.delete(0, tk.END)
         self.umur.delete(0, tk.END)
         self.kontak.delete(0, tk.END)
-        # self.film.set('')
+        self.film.event_delete('')
 
     def lihat_data(self):
         self.jendela_info = tk.Toplevel(self.root)
         self.jendela_info.title("Info Pelanggan")
-        self.tree = ttk.Treeview(self.jendela_info, columns=('Nama', 'Umur', 'No. Telp', 'Tanggal Beli', 'Film', 'Harga', 'Jam Tayang'))
+        self.tree = ttk.Treeview(self.jendela_info, columns=('No', 'Nama', 'Umur', 'No. Telp', 'Tanggal Beli', 'Film', 'Harga', 'Jam Tayang'))
+        self.tree.heading('No', text='No')
         self.tree.heading('Nama', text='Nama')
         self.tree.heading('Umur', text='Umur')
         self.tree.heading('No. Telp', text='No. Telp')
@@ -116,6 +116,7 @@ class SistemTiket:
         self.tree.heading('Harga', text='Harga')
         self.tree.heading('Jam Tayang', text='Jam Tayang')
         self.tree.column('#0', stretch=tk.NO, width=0)
+        self.tree.column('No', stretch=tk.NO, width=40)
         self.tree.column('Nama', stretch=tk.NO, width=150)
         self.tree.column('Umur', stretch=tk.NO, width=80)
         self.tree.column('No. Telp', stretch=tk.NO, width=100)
@@ -123,12 +124,16 @@ class SistemTiket:
         self.tree.column('Film', stretch=tk.NO, width=150)
         self.tree.column('Harga', stretch=tk.NO, width=100)
         self.tree.column('Jam Tayang', stretch=tk.NO, width=100)
+        
+        no = 0
         with open(self.file, 'r') as file:
             reader = csv.DictReader(file)
             for idx, row in enumerate(reader, start=1):
-                self.tree.insert('', 'end', iid=idx, values=(row['Nama'], row['Umur'], row['No_tlp'], row['Tanggal_Beli'], row['Film'], row['Harga'], row['Jam_Tayang']))
+                no += 1
+                self.tree.insert('', 'end', iid=idx, values=(no, row['Nama'], row['Umur'], row['No_tlp'], row['Tanggal_Beli'], row['Film'],row['Harga'], row['Jam_Tayang']))
+        
         self.tree.pack(expand=YES, fill=BOTH)
-        tk.Button(self.jendela_info, text='Total Penjualan',command=self.total_penjualan, font=self.font).pack(padx=5,pady=5)
+        tk.Button(self.jendela_info, text='Total Penjualan', command=self.total_penjualan, font=self.font).pack(padx=5, pady=5)
 
     def total_penjualan(self):
         total = 0
